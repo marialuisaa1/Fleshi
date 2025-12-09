@@ -51,6 +51,28 @@ def profile(user_id):
     else:
         user = User.query.get(int(user_id))
         return render_template('profile.html', user=user, form=None)
+#botão excluir- rota
+@app.route('/delete_photo/<int:photo_id>', methods=['POST'])
+@login_required
+def delete_photo(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+
+    if photo.user_id != current_user.id:
+        return redirect(url_for('profile', user_id=current_user.id))
+
+    path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        app.config['UPLOAD_FOLDER'],
+        photo.file_name
+    )
+
+    if os.path.exists(path):
+        os.remove(path)
+
+    database.session.delete(photo)
+    database.session.commit()
+
+    return redirect(url_for('profile', user_id=current_user.id))
 @app.route('/logout')
 @login_required
 def logout():

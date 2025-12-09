@@ -6,6 +6,7 @@ from appfleshi.models import User
 class PhotoForm(FlaskForm):
     photo = FileField('Photo', validators=[DataRequired()])
     submit = SubmitField('Postar')
+    delete = SubmitField('Excluir Foto')
 
 
 class LoginForm(FlaskForm):
