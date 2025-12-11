@@ -11,9 +11,29 @@
 
     {% for photo in photos %}
 
-           <a href="{{ url_for('profile', user_id = photo.user_id) }}">
-               <img src="{{ url_for('static', filename='posts_photos/'~ photo.file_name) }}" alt="Imagem">
-           </a>
-    {% endfor %}
+    <div class="foto-container">
+
+        <!-- foto -->
+        <a href="{{ url_for('profile', user_id=photo.user_id) }}">
+            <img src="{{ url_for('static', filename='posts_photos/' ~ photo.file_name) }}" alt="Imagem">
+        </a>
+
+        <!-- curte -->
+        <form action="{{ url_for('like', photo_id=photo.id) }}" method="POST">
+
+            {% set liked = Like.query.filter_by(user_id=current_user.id, photo_id=photo.id).first() %}
+
+            {% if liked %}
+                <button type="submit">Descurtir</button>
+            {% else %}
+                <button type="submit">Curtir</button>
+            {% endif %}
+            <span>{{ Like.query.filter_by(photo_id=photo.id).count() }} curtidas</span>
+        </form>
+
+    </div>
+
+{% endfor %}
+
 
 {% endblock %}

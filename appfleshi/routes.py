@@ -1,9 +1,9 @@
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, request
 from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy.sql.functions import user
 from sqlalchemy.testing.provision import register
 from appfleshi import app, database, bcrypt
-from appfleshi.models import User, Photo
+from appfleshi.models import User, Photo, Like
 from appfleshi.forms import LoginForm, RegisterForm, PhotoForm
 from appfleshi import app
 import os
@@ -83,4 +83,21 @@ def logout():
 @login_required
 def feed():
     photos = Photo.query.order_by(Photo.upload_date.desc()).all()
-    return render_template('feed.html', photos=photos)
+    return render_template('feed.html', photos=photos, Like=Like)
+
+#curtir-rota
+@app.route('/like/<int:photo_id>', methods=['POST'])
+@login_required
+def like(photo_id):
+    like = Like.query.filter_by(user_id=current_user.id, photo_id=photo_id).first()
+
+    if like:
+
+        database.session.delete(like)
+    else:
+
+        new_like = Like(user_id=current_user.id, photo_id=photo_id)
+        database.session.add(new_like)
+
+    database.session.commit()
+    return redirect(url_for('feed'))

@@ -21,3 +21,9 @@ class Photo(database.Model):
     upload_date= database.Column(database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     user_id= database.Column(database.Integer, database.ForeignKey('user.id'), nullable=False)
 
+class Like(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    user_id = database.Column(database.Integer, database.ForeignKey('user.id'))
+    photo_id = database.Column(database.Integer, database.ForeignKey('photo.id'))
+
+
