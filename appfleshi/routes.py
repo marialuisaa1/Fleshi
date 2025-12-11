@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, send_from_directory
 from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy.sql.functions import user
 from sqlalchemy.testing.provision import register
@@ -101,3 +101,19 @@ def like(photo_id):
 
     database.session.commit()
     return redirect(url_for('feed'))
+#baixar foto -  rota
+@app.route('/download/<int:photo_id>')
+@login_required
+def download_photo(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+
+    upload_path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        app.config['UPLOAD_FOLDER']
+    )
+
+    return send_from_directory(
+        upload_path,
+        photo.file_name,
+        as_attachment=True
+    )
