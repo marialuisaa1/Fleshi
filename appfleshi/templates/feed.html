@@ -7,7 +7,7 @@
 {% block body %}
 
     {% include "navbar.html" %}
-        <h1>Feed Principal</h1>
+        <h1>Feed</h1>
 
     {% for photo in photos %}
 
@@ -18,8 +18,10 @@
         </a>
 
         <div class="post-actions">
-            <a href="{{ url_for('download_photo', photo_id=photo.id) }}" class="btn-download">
-            Baixar foto</a>
+            <form method="POST" action="{{ url_for('download_photo') }}">
+                        <input type="hidden" name="photo_id" value="{{ photo.id }}">
+                        <button type="submit" class="btn-download">Baixar foto</button>
+            </form>
 
             <form action="{{ url_for('like', photo_id=photo.id) }}" method="POST">
 

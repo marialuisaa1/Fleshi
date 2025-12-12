@@ -51,7 +51,7 @@ def profile(user_id):
     else:
         user = User.query.get(int(user_id))
         return render_template('profile.html', user=user, form=None)
-#botão excluir- rota
+#botão excluir- rota dinâmica
 @app.route('/delete_photo/<int:photo_id>', methods=['POST'])
 @login_required
 def delete_photo(photo_id):
@@ -85,7 +85,7 @@ def feed():
     photos = Photo.query.order_by(Photo.upload_date.desc()).all()
     return render_template('feed.html', photos=photos, Like=Like)
 
-#curtir-rota
+#curtir-rota dinâmica
 @app.route('/like/<int:photo_id>', methods=['POST'])
 @login_required
 def like(photo_id):
@@ -101,10 +101,15 @@ def like(photo_id):
 
     database.session.commit()
     return redirect(url_for('feed'))
-#baixar foto -  rota
-@app.route('/download/<int:photo_id>')
+#baixar foto -  rota simples
+@app.route('/download', methods=['POST'])
 @login_required
-def download_photo(photo_id):
+def download_photo():
+    photo_id = request.form.get('photo_id', type=int)
+
+    if not photo_id:
+        abort(400, "photo_id não fornecido.")
+
     photo = Photo.query.get_or_404(photo_id)
 
     upload_path = os.path.join(
@@ -117,3 +122,4 @@ def download_photo(photo_id):
         photo.file_name,
         as_attachment=True
     )
+
