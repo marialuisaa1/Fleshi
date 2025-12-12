@@ -6,24 +6,35 @@
 {% block body %}
     <body>
         {% include "navbar.html" %}
-        <h1>Perfil do Usuário: {{ user.username }} </h1>
+        <h1>{{ user.username }} </h1>
+
         {% if form %}
-            <form method="POST" enctype="multipart/form-data">
-                {{ form.csrf_token }}
-                {{ form.photo() }}
-                {{ form.submit() }}
-            </form>
+            <div class="d-flex justify-content-center">
+                <div class="post-container-profile" style="max-width: 400px; padding: 20px;">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.csrf_token }}
+                        {{ form.photo(style="margin-bottom: 10px; border: 2px solid var(--roxo-claro);") }}
+                        {{ form.submit(class="like-button") }}
+                    </form>
+                </div>
+            </div>
         {% endif %}
 
+        <div class="d-flex flex-wrap justify-content-center flex-column align-items-center">
+            {% for photo in user.photos %}
+            <div class="post-container-profile" style="max-width: 300px; margin: 10px;">
+                <img src="{{ url_for('static', filename='posts_photos/'~ photo.file_name) }}" alt="Imagem">
 
-        {% for photo in user.photos %}
-            <img src="{{ url_for('static', filename='posts_photos/'~ photo.file_name) }}" alt="Imagem">
-            <!--botão excluir-->
-            <form method="POST" action="{{ url_for('delete_photo', photo_id=photo.id) }}">
-                <button type="submit">Excluir</button>
-                </form>
-        {% endfor %}
+                <div class="post-actions">
+                    <a href="{{ url_for('download_photo', photo_id=photo.id) }}" class="btn-download">
+                    Baixar foto</a>
 
-
+                    <form method="POST" action="{{ url_for('delete_photo', photo_id=photo.id) }}">
+                        <button type="submit" class="delete-button">Excluir</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </body>
 {% endblock %}

@@ -1,5 +1,11 @@
-<nav>
-    <a href="{{ url_for('feed') }}">Feed</a>
-    <a href="{{ url_for('profile', user_id=current_user.id) }}">Perfil</a>
-    <a href="{{ url_for('logout') }}">Sair</a>
+<nav class="navbar-fléshi">
+    <a href="{{ url_for('feed') }}">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Fléshi Logo" class="navbar-logo">
+    </a>
+
+    <div class="navbar-links">
+        <a href="{{ url_for('feed') }}">Feed</a>
+        <a href="{{ url_for('profile', user_id=current_user.id) }}">Perfil</a>
+        <a href="{{ url_for('logout') }}">Sair</a>
+    </div>
 </nav>
